@@ -6,13 +6,12 @@
 package practica7;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static practica7.Fichero.leerBytes;
 
 /**
  *
@@ -24,10 +23,16 @@ public class Practica7 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        mostrarMenu();
+        
+        //array de encabezados
+        String [] encabezados = {"-----------------------","Cartelera de CineFBMoll",
+            "-----------------------","-----", "Año:", "Director: ",
+            "Duracion: ", "Sinopsis: ", "Reparto: ", "Sesión: ", "horas"};
+                
+        mostrarMenu(encabezados);
     }
     
-    public static void mostrarMenu(){
+    public static void mostrarMenu(String [] encabezados){
         Scanner lector = new Scanner(System.in);
         int opcion;
         boolean salir = false;
@@ -41,7 +46,7 @@ public class Practica7 {
             opcion = lector.nextInt();
             switch(opcion){
                 case 1:
-                    leerBytes();
+                    leoBytes(encabezados);
                     break;
                 case 2:
                     break;
@@ -63,94 +68,66 @@ public class Practica7 {
         return ruta;
     }
     
-    public static void leoByte(){
+    public static void leoBytes(String [] encabezados){
         String origen = pedirRuta("origen");
+        String destino = pedirRuta("destino");
+        //con el siguiente metodo podré añadir un salto de linea
+        String nuevaLinea = System.getProperty("line.separator");
         int letra;
-        String [] encabezados = {"-----------------------Cartelera de CineFBMoll-----------------------\n",
-            "-----", "\nAño:", "Director: ", "Duracion: ", "Sinopsis: ", "Reparto: ", "Sesión: ", "horas"};
-        try (FileInputStream ficheroOrigen = new FileInputStream(origen)){
+        int aux = 0;//contador de #
+        int pos = 3;//para imprimir los encabezados,empezamos en la posicion 3 de la array
+        //con las siguientes clases indico a java que leo y escribo en utf-8
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(origen), "UTF-8");
+               OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(destino, true), StandardCharsets.UTF_8)){
+            escribirCabecera(encabezados,destino);
+            /*el primer valor es una peli, por lo que imprimo las lineas que van delante del titulo*/
+            writer.write(encabezados[pos]);
             do{
-                letra = ficheroOrigen.read();
+                letra = reader.read();
                 System.out.print((char)letra);
+                if ((char) letra == '#'){
+                    /*si aux vale 0 es que nos encontramos en el titulo y
+                    tengo que imprimir las lineas del final del titulo*/
+                    if (aux == 0){
+                        writer.write(encabezados[pos]); //escribo las lineas del final del titulo
+                        pos++;
+                        writer.append(nuevaLinea);//pongo un salto de linea
+                        writer.write(encabezados[pos]); //escribo el siguiente encabezado
+                        pos++;
+                    }
+                    
+                    else{
+                        writer.append(nuevaLinea);
+                        writer.write(encabezados[pos]);
+                        pos++;
+                    }
+                    
+                    aux++;
+                }
+                else if((char) letra == '{'){ //es una nueva peli, reseteo auxiliares
+                    aux = 0;
+                    pos = 3;
+                    writer.append(nuevaLinea);
+                    writer.write(encabezados[pos]);
+                }
+                else if (letra != -1){
+                    writer.write(letra);
+                }
+                
             }while(letra != -1);
             
         } catch (IOException ex) {
-            Logger.getLogger(Fichero.class.getName()).log(Level.SEVERE, null, ex);
+            //TO DO
         }
     }
     
-    public static void leerBytes(){
-        String origen = pedirRuta("origen");
-        String destino = pedirRuta("destino");//TO DO controlar por excepcion que me da una ruta
-        int aux = 1;//contador de #
-        int letra;
-        int pelisTotales;
-        String [][] datosPelis;
-        int contadorFrases = 0;
-        String frases = null;//Auxiliar para ir agregando frases a la array
-        //instancio en el try para utilizar el autoclosable
-        try (FileInputStream ficheroOrigen = new FileInputStream(origen);
-                FileOutputStream ficheroDestino = new FileOutputStream(destino, true)
-                ){ //true para que no me sobreescriba cada linea       
-            /*pelisTotales = contarPelis(ficheroOrigen);
-            datosPelis = new String [pelisTotales][7]; *///calculos el numero de pelis que hay en el fichero y damos por hecho que siempre habrá 7 filas
-            do{
-                letra = ficheroOrigen.read();
-                System.out.print((char)letra);
-                if(letra != -1){
-                    if((char)letra == '{'){ //porqué tiene que se comilla simple aqui? No me coge la doble comilla
-                        //controlo si es el titulo para poner guiones al final
-                        frases = frases + "-----";
-                        //datosPelis[pelisTotales][contadorFrases] = frases;
-                        
-                    }else if((char)letra == '#'){
-                        if (aux == 1 || aux == 7){ //1 para añadir guiones a titulos (siempre estan en estas posiciones
-                            frases = frases + "-----\n";
-                            //datosPelis[pelisTotales][contadorFrases] = frases;
-                            contadorFrases++;//en el momento que me encuentro un # voy a la siguiente posicion de la array
-                        }
-                        else{
-                            frases = frases + "\n";
-                            //datosPelis[pelisTotales][contadorFrases] = frases;
-                        }
-                        aux++;
-                    }
-                    else{
-                        frases = frases + letra;
-                        //datosPelis[pelisTotales][contadorFrases] = frases;
-                    }
-                }
-            }while(letra !=-1);
-            
-            /*
-            for (int i = 0;i<datosPelis.length;i++){
-                for (int j = 0;j<datosPelis[i].length;j++){
-                    System.out.println(datosPelis[i][j]);
-                }
-            }*/
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Fichero.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Fichero.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public static void mostrarCartelera(){
-        System.out.println("-----------------------\n" + "Cartelera de CineFBMoll\n" +
-        "-----------------------\n");
-    }
-    
-    public static int contarPelis(FileInputStream ficheroOrigen) throws IOException{
-        int contadorPelis = 0;
-        int letra;
-        do{
-            letra = ficheroOrigen.read();
-            if((char)letra == '{'){
-                contadorPelis++;
+    public static void escribirCabecera(String [] encabezados, String destino) throws IOException{
+        String nuevaLinea = System.getProperty("line.separator");
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(destino, true), StandardCharsets.UTF_8)){
+            for (int i = 0; i<3; i++){
+                writer.write(encabezados[i]);//escribo hasta las primeras lineas del titulo
+                writer.append(nuevaLinea);//con esto añado un salto de linea
             }
-        }while(letra != -1);
-        
-        return contadorPelis;
-    }
+        }
+    }    
 }
