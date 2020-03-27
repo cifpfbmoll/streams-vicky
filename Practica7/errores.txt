@@ -1,0 +1,4 @@
+27/2/2020 18:33:30 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:131)
+practica7.Practica7.mostrarMenu(Practica7.java:57)
+practica7.Practica7.main(Practica7.java:40)
