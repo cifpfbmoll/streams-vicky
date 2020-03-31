@@ -2,3 +2,63 @@
 practica7.Practica7.leoBytes(Practica7.java:131)
 practica7.Practica7.mostrarMenu(Practica7.java:57)
 practica7.Practica7.main(Practica7.java:40)
+31/2/2020 18:36:58 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:129)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/2/2020 18:55:20 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/14/2020 19:3:9 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/14/2020 19:4:21 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/2/2020 19:4:53 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/14/2020 19:5:15 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/2/2020 19:10:46 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/14/2020 19:11:57 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/3/2020 19:15:15 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/3/2020 19:17:10 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/3/2020 19:19:10 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/3/2020 19:20:3 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/3/2020 19:23:10 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/3/2020 19:23:27 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:140)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+31/3/2020 19:24:58 La ruta de origen indicada no existe
+practica7.Practica7.leoBytes(Practica7.java:141)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)

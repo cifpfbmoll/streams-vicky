@@ -16,10 +16,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static practica7.ErrorderutaException.registrarErrores;
 
 /**
  *
@@ -73,7 +71,18 @@ public class Practica7 {
     public static String pedirRuta(String origenEntrada){
         Scanner lector = new Scanner(System.in);
         System.out.println("Dime la ruta del fichero de " + origenEntrada);
-        String ruta = lector.nextLine();
+        String ruta = lector.next();
+        if (ruta == ""){ //no consigo capturar el enter
+            do{
+                try {
+                    throw new ErrorderutaException(102);
+                } catch (ErrorderutaException ex) {
+                    System.out.println("Dime una ruta valida");
+                    System.out.println(ex.getMensaje());
+                    registrarErrores(ex.getMensaje(),ex.getStackTrace());
+                }
+            } while (ruta == "");
+        }
         return ruta;
     }
     
@@ -261,46 +270,6 @@ public class Practica7 {
             for (int i = 0; i<3; i++){
                 writer.write(encabezados[i]);//escribo hasta las primeras lineas del titulo
                 writer.append(nuevaLinea);//con esto añado un salto de linea
-            }
-        }
-    }    
-    
-    public static void registrarErrores(String errorMessage, StackTraceElement [] pila){
-        String nuevaLinea = System.getProperty("line.separator");
-        try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("errores.txt", true), StandardCharsets.UTF_8)){
-            registrarFecha(writer);
-            writer.write(errorMessage);
-            writer.append(nuevaLinea);//salto de linea
-            for (int i = 0; i<pila.length;i++){
-                writer.write(pila[i].toString());//el metodo toString envia las pila de ejecución
-                writer.append(nuevaLinea);
-            }
-        } catch (IOException ex) {
-            System.out.println("se ha producido un error inesperado");
-        }
-    }
-    
-    public static void registrarFecha(OutputStreamWriter writer) throws IOException{
-        //fuente: http://lineadecodigo.com/java/obtener-la-hora-en-java/
-        Calendar calendario = Calendar.getInstance();//creo instancia del calendario gregoriano
-        int [] fecha = {calendario.get(Calendar.DATE),calendario.get(Calendar.MONTH),calendario.get(Calendar.YEAR),
-        calendario.get(Calendar.HOUR_OF_DAY),calendario.get(Calendar.MINUTE),calendario.get(Calendar.SECOND)};
-        char separador1 = '/';
-        char separador2 = ' ';
-        char separador3 = ':';
-        for (int i=0; i<fecha.length;i++){
-            writer.write(Integer.toString(fecha[i]));
-            if(i<2){
-                writer.write(separador1);
-            }
-            else if(i == 2){
-                writer.write(separador2);
-            }
-            else if (i < fecha.length-1){
-                writer.write(separador3);
-            }
-            else{
-                writer.write(separador2);
             }
         }
     }
