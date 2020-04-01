@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import static practica7.ErrorderutaException.registrarErrores;
+import static practica7.Pelicula.menuObjPeli;
 
 /**
  *
@@ -49,7 +50,8 @@ public class Practica7 {
             System.out.println("1. Lectura y escritura del fichero de cartelera byte a byte (byte Streams).");
             System.out.println("2. Lectura y escritura de fichero de cartelera carácter a carácter (character Streams).");
             System.out.println("3. Lectura y escritura de fichero línea a línea con buffers (character Streams).");
-            System.out.println("4. Salir");
+            System.out.println("4. Tratamiento de objetos.");
+            System.out.println("5. Salir");
             System.out.println("Dime una opcion: ");
             opcion = lector.nextInt();
             switch(opcion){
@@ -63,6 +65,9 @@ public class Practica7 {
                     leoLineas(encabezados);
                     break;
                 case 4:
+                    menuObjPeli();
+                    break;
+                case 5:
                     salir = true;
                     break;
                 default:
@@ -118,7 +123,7 @@ public class Practica7 {
                         writer.write(("\n".getBytes()));//pongo un salto de linea
                         writer.write(encabezados[pos].getBytes()); //escribo el siguiente encabezado
                         pos++;
-                    }        
+                    }
                     else{
                         writer.write(("\n".getBytes()));
                         writer.write(encabezados[pos].getBytes());
@@ -127,6 +132,7 @@ public class Practica7 {
                     aux++;
                 }
                 else if((char) letra == '{'){ //es una nueva peli, reseteo auxiliares
+                    writer.write(encabezados[pos].getBytes());//después del ultimo caracter escribo la ultima string
                     aux = 0;
                     pos = 3;
                     writer.write(("\n".getBytes()));
@@ -134,6 +140,9 @@ public class Practica7 {
                 }
                 else if (letra != -1){
                     writer.write(letra);
+                }
+                else if(letra == -1){
+                    writer.write(encabezados[pos].getBytes());//después del ultimo caracter escribo la ultima string
                 }
             }while(letra != -1);          
         } catch (UnsupportedEncodingException ex) {
@@ -188,6 +197,7 @@ public class Practica7 {
                     aux++;
                 }
                 else if((char) letra == '{'){ //es una nueva peli, reseteo auxiliares
+                    writer.write(encabezados[pos]);//después del ultimo caracter escribo la ultima string
                     aux = 0;
                     pos = 3;
                     writer.append(nuevaLinea);
@@ -195,6 +205,9 @@ public class Practica7 {
                 }
                 else if (letra != -1){
                     writer.write(letra);
+                }
+                else if(letra == -1){
+                    writer.write(encabezados[pos]);//después del ultimo caracter escribo la ultima string
                 }
             }while(letra != -1);          
         } catch (UnsupportedEncodingException ex) {
@@ -246,6 +259,7 @@ public class Practica7 {
                     aux++;
                 }
                 else if((char) letra == '{'){ //es una nueva peli, reseteo auxiliares
+                    writer.write(encabezados[pos]);//después del ultimo caracter escribo la ultima string
                     aux = 0;
                     pos = 3;
                     writer.append(nuevaLinea);
@@ -253,6 +267,9 @@ public class Practica7 {
                 }
                 else if (letra != -1){
                     writer.write(letra);
+                }
+                else if (letra == -1){
+                    writer.write(encabezados[pos]);//después del ultimo caracter escribo la ultima string
                 }
             }while(letra != -1);          
         } catch (UnsupportedEncodingException ex) {
@@ -285,7 +302,7 @@ public class Practica7 {
             escribirCabecera(encabezados,destino);
             do{
                 linea = lector.readLine();//leo hasta q encuentra un salto de linea
-                if (linea != null){
+                if (linea != null){//tengo que poner este if, porque sino me salta la excepcion nullpointer exception
                     peliculas = linea.split("\\{"); // el simbolo { es un caracter reservado y con \\ lo escapamos
                     for (int i = 0;i<peliculas.length;i++){
                         pos = 3;//reseteo la variable auxiliar antes de cada peli
@@ -297,14 +314,14 @@ public class Practica7 {
                                 writer.write(encabezados[pos]);//escribo las lineas detras del titulo
                             }
                             pos++;
-                            writer.newLine(); //salto de linea
+                            if(j == textosPeli.length-1){
+                                writer.write(encabezados[pos]);//después del ultimo caracter escribo la ultima string
+                            }
+                            writer.newLine();
                         }
                     }
                 }
             }while(linea != null); //cuando llegamos al final del fichero, el buffer devuelve un null      
-        } catch (UnsupportedEncodingException ex) {
-            ex = new UnsupportedEncodingException("El encoding indicado no es correcto.");
-            System.out.println(ex.getMessage());
         } catch (FileNotFoundException ex) {
             try {
                 throw new ErrorderutaException(101);
