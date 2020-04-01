@@ -62,3 +62,37 @@ practica7.Practica7.main(Practica7.java:38)
 practica7.Practica7.leoBytes(Practica7.java:141)
 practica7.Practica7.mostrarMenu(Practica7.java:55)
 practica7.Practica7.main(Practica7.java:38)
+1/4/2020 13:20:45 No has introducido una ruta
+practica7.Practica7.pedirRuta(Practica7.java:80)
+practica7.Practica7.leoBytes(Practica7.java:106)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+1/4/2020 13:21:34 No has introducido una ruta
+practica7.Practica7.pedirRuta(Practica7.java:80)
+practica7.Practica7.leoBytes(Practica7.java:106)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+1/4/2020 13:21:39 No has introducido una ruta
+practica7.Practica7.pedirRuta(Practica7.java:80)
+practica7.Practica7.leoBytes(Practica7.java:107)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+1/4/2020 13:21:42 No has introducido una ruta
+practica7.Practica7.pedirRuta(Practica7.java:80)
+practica7.Practica7.leoBytes(Practica7.java:107)
+practica7.Practica7.mostrarMenu(Practica7.java:55)
+practica7.Practica7.main(Practica7.java:38)
+1/4/2020 16:3:57 No has introducido una ruta
+practica7.Practica7.pedirRuta(Practica7.java:82)
+practica7.Practica7.leoLineas(Practica7.java:275)
+practica7.Practica7.mostrarMenu(Practica7.java:63)
+practica7.Practica7.main(Practica7.java:40)
+1/4/2020 16:3:58 No has introducido una ruta
+practica7.Practica7.pedirRuta(Practica7.java:82)
+practica7.Practica7.leoLineas(Practica7.java:275)
+practica7.Practica7.mostrarMenu(Practica7.java:63)
+practica7.Practica7.main(Practica7.java:40)
+1/4/2020 16:4:3 La ruta de origen indicada no existe
+practica7.Practica7.leoLineas(Practica7.java:310)
+practica7.Practica7.mostrarMenu(Practica7.java:63)
+practica7.Practica7.main(Practica7.java:40)

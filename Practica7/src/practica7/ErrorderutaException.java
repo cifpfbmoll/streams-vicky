@@ -64,7 +64,8 @@ public class ErrorderutaException extends Exception{
                 writer.append(nuevaLinea);
             }
         } catch (IOException ex) {
-            System.out.println("se ha producido un error inesperado");
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
         }
     }
     
@@ -93,5 +94,4 @@ public class ErrorderutaException extends Exception{
             }
         }
     }
-    
 }

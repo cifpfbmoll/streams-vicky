@@ -5,6 +5,8 @@
  */
 package practica7;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -58,6 +60,7 @@ public class Practica7 {
                     leoChars(encabezados);
                     break;
                 case 3:
+                    leoLineas(encabezados);
                     break;
                 case 4:
                     salir = true;
@@ -71,18 +74,19 @@ public class Practica7 {
     public static String pedirRuta(String origenEntrada){
         Scanner lector = new Scanner(System.in);
         System.out.println("Dime la ruta del fichero de " + origenEntrada);
-        String ruta = lector.next();
-        if (ruta == ""){ //no consigo capturar el enter
-            do{
+        String ruta = null;
+        while ((ruta == null) || (ruta.trim().isEmpty())) {
+            ruta = lector.nextLine();
+            if ((ruta == null) || (ruta.trim().isEmpty())){
                 try {
                     throw new ErrorderutaException(102);
                 } catch (ErrorderutaException ex) {
-                    System.out.println("Dime una ruta valida");
                     System.out.println(ex.getMensaje());
                     registrarErrores(ex.getMensaje(),ex.getStackTrace());
                 }
-            } while (ruta == "");
+            }            
         }
+
         return ruta;
     }
     
@@ -143,7 +147,8 @@ public class Practica7 {
                 registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
             }
         } catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado.");
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
         }
     }
     
@@ -203,7 +208,8 @@ public class Practica7 {
                 registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
             }
         } catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado.");
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
         }
     }
     
@@ -215,10 +221,10 @@ public class Practica7 {
         int letra;
         int aux = 0;//contador de #
         int pos = 3;//para imprimir los encabezados,empezamos en la posicion 3 de la array
-        //con las siguientes clases indico a java que leo y escribo en utf-8
         File entrada = new File(origen);
-        try (FileReader reader = new FileReader(entrada);FileWriter writer = new FileWriter(destino)){
+        try (FileReader reader = new FileReader(entrada);FileWriter writer = new FileWriter(destino,true)){
             escribirCabecera(encabezados,destino);
+            writer.write(encabezados[pos]);//imprimo las lineas del principio de la peli
             do{
                 letra = reader.read();
                 System.out.print((char)letra);
@@ -260,7 +266,55 @@ public class Practica7 {
                 registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
             }
         } catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado.");
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
+        }
+    }
+    
+    public static void leoLineas(String [] encabezados){
+        String origen = pedirRuta("origen");
+        String destino = pedirRuta("destino");
+        String linea = "";
+        String [] peliculas = null;
+        String [] textosPeli = null;
+        int pos = 3;//para imprimir los encabezados,empezamos en la posicion 3 de la array
+        File entrada = new File(origen);
+        File salida = new File(destino);
+        try (BufferedReader lector = new BufferedReader(new FileReader(entrada));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(salida, true))){
+            escribirCabecera(encabezados,destino);
+            do{
+                linea = lector.readLine();//leo hasta q encuentra un salto de linea
+                if (linea != null){
+                    peliculas = linea.split("\\{"); // el simbolo { es un caracter reservado y con \\ lo escapamos
+                    for (int i = 0;i<peliculas.length;i++){
+                        pos = 3;//reseteo la variable auxiliar antes de cada peli
+                        textosPeli = peliculas[i].split("#");
+                        for (int j = 0;j<textosPeli.length;j++){
+                            writer.write(encabezados[pos]);//escribo los encabezados
+                            writer.write(textosPeli[j]); //escribo el texto
+                            if(j==0){
+                                writer.write(encabezados[pos]);//escribo las lineas detras del titulo
+                            }
+                            pos++;
+                            writer.newLine(); //salto de linea
+                        }
+                    }
+                }
+            }while(linea != null); //cuando llegamos al final del fichero, el buffer devuelve un null      
+        } catch (UnsupportedEncodingException ex) {
+            ex = new UnsupportedEncodingException("El encoding indicado no es correcto.");
+            System.out.println(ex.getMessage());
+        } catch (FileNotFoundException ex) {
+            try {
+                throw new ErrorderutaException(101);
+            } catch (ErrorderutaException ex1) {                    
+                System.out.println(ex1.getMensaje());
+                registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
+            }
+        } catch (IOException ex) {
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
         }
     }
     
@@ -268,7 +322,7 @@ public class Practica7 {
         String nuevaLinea = System.getProperty("line.separator");
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(destino, true), StandardCharsets.UTF_8)){
             for (int i = 0; i<3; i++){
-                writer.write(encabezados[i]);//escribo hasta las primeras lineas del titulo
+                writer.write(encabezados[i]);
                 writer.append(nuevaLinea);//con esto añado un salto de linea
             }
         }
