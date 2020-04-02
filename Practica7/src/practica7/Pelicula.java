@@ -114,25 +114,6 @@ public class Pelicula implements Serializable{
         this.sesion = sesion;
     }
     
-    public Pelicula pedirDatos(){
-        Scanner lector = new Scanner (System.in);
-        System.out.print("Dime el titulo: ");
-        this.setTitulo(lector.nextLine());
-        System.out.print("Dime el año: ");
-        this.setYear(Integer.parseInt(lector.nextLine()));
-        System.out.print("Dime el director: ");
-        this.setDirector(lector.nextLine());
-        System.out.print("Dime la duracion: ");
-        this.setDuracion(Integer.parseInt(lector.nextLine()));
-        System.out.print("Escribe la sinopsis: ");
-        this.setSinopsis(lector.nextLine());
-        System.out.print("Dime el reparto: ");
-        this.setReparto(lector.nextLine());
-        System.out.print("Dime la sesión: ");
-        this.setSesion(lector.nextLine());
-        return this;
-    }
-    
     public static void menuObjPeli(){
         Scanner lector = new Scanner(System.in);
         int opcion;
@@ -142,7 +123,7 @@ public class Pelicula implements Serializable{
             System.out.println("1. Lectura línea a línea y escritura con objetos.");
             System.out.println("2. Lectura de objetos y escritura de objetos.");
             System.out.println("3. Lectura de objetos y escritura por consola.");
-            System.out.println("4. Lectura por consola y escritura de objetos. (añadirá objetos al final del fichero existente)");
+            System.out.println("4. Lectura por consola y escritura de objetos.");
             System.out.println("5. Volver al menú principal.");
             System.out.println("Dime una opcion: ");
             opcion = lector.nextInt();
@@ -154,8 +135,10 @@ public class Pelicula implements Serializable{
                     leerEscribirObjPelicula();
                     break;
                 case 3:
+                    imprimirObj();
                     break;
                 case 4:
+                    crearObjporTeclado();
                     break;
                 case 5:
                     salir = true;
@@ -212,6 +195,7 @@ public class Pelicula implements Serializable{
                 System.out.println(ex.getCause());
             }
         }
+        System.out.println("Se ha creado el fichero: peliculasObj con los objetos");
     }
     
     public static void leerEscribirObjPelicula(){
@@ -228,18 +212,75 @@ public class Pelicula implements Serializable{
             writerObj = new ObjectOutputStream(ficheroDestino); //escritor de objetos
             while (true){ //mientras haya objetos sigue leyendo. Cuando ya no hay objetos el lector lanza una excepción
                 Pelicula peli = (Pelicula) lectorObj.readObject(); // creo una peli, leo una instancia de la clase Pelicula
-                writerObj.writeObject(peli); //escribo la Pelicula que he leido
+                writerObj.writeObject(peli); //escribo la Pelicula que he leido en el fichero destino
             }
         } catch (FileNotFoundException ex) {
-            //TO DO
+            try {
+                throw new ErrorderutaException(101);
+            } catch (ErrorderutaException ex1) {                    
+                System.out.println(ex1.getMensaje());
+                registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
+            }
         } catch (ClassNotFoundException ex) {
-            //TO DO
+            ex = new ClassNotFoundException("La clase que se está intentado leer no existe");
+            System.out.println(ex.getMessage());
         } catch (EOFException ex) {
             /*Esta excepcion hay que ponerla manualmente siempre! el IDE no la pide, hay que ponerla a mano*/
-            System.out.println("Fin de fichero");
+            System.out.println("Se ha creado el fichero: newDocObjPelis con los"
+                + " objetos leidos del fichero peliculasObj");
         } catch (IOException ex) {
-            //TO DO
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
         }  finally {
+            try {
+                ficheroOrigen.close();
+                lectorObj.close();
+                ficheroDestino.close();
+                writerObj.close();
+            } catch (IOException ex) {
+                System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+                System.out.println(ex.getCause());
+            }
+        }
+    }
+    
+    public static void imprimirObj(){
+        File origen = new File ("newDocObjPelis");
+        FileInputStream ficheroOrigen = null;
+        ObjectInputStream lectorObj = null;
+        try {
+            ficheroOrigen = new FileInputStream(origen);//ruta origen
+            lectorObj = new ObjectInputStream(ficheroOrigen); //lector de objetos
+            System.out.println("--------------------------------------\n" +
+                    "Cartelera de CineFBMoll\n" + "--------------------------------------");
+            while (true){ //mientras haya objetos sigue leyendo. Cuando ya no hay objetos el lector lanza una excepción
+                Pelicula peli = (Pelicula) lectorObj.readObject(); // creo una peli, leo una instancia de la clase Pelicula
+                System.out.println("titulo: " + peli.getTitulo());
+                System.out.println("año: " + peli.getYear());
+                System.out.println("director: " + peli.getDirector());
+                System.out.println("duracion: " + peli.getDuracion());
+                System.out.println("sinopsis: " + peli.getSinopsis());
+                System.out.println("reparto: " + peli.getReparto());
+                System.out.println("sesion: " + peli.getSesion());
+                System.out.println("*******************************************");
+            }
+        } catch (FileNotFoundException ex) {
+            try {
+                throw new ErrorderutaException(101);
+            } catch (ErrorderutaException ex1) {                    
+                System.out.println(ex1.getMensaje());
+                registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
+            }
+        }catch (EOFException ex) {
+            /*Esta excepcion hay que ponerla manualmente siempre! el IDE no la pide, hay que ponerla a mano*/
+            System.out.println("Fin de fichero");
+        } catch (ClassNotFoundException ex) {
+            ex = new ClassNotFoundException("La clase que se está intentado leer no existe");
+            System.out.println(ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
+        } finally {
             try {
                 ficheroOrigen.close();
                 lectorObj.close();
@@ -248,5 +289,57 @@ public class Pelicula implements Serializable{
                 System.out.println(ex.getCause());
             }
         }
+    }
+    
+    public Pelicula pedirDatos(){
+        Scanner lector = new Scanner (System.in);
+        System.out.print("Dime el titulo: ");
+        this.setTitulo(lector.nextLine());
+        System.out.print("Dime el año: ");
+        this.setYear(Integer.parseInt(lector.nextLine()));
+        System.out.print("Dime el director: ");
+        this.setDirector(lector.nextLine());
+        System.out.print("Dime la duracion: ");
+        this.setDuracion(Integer.parseInt(lector.nextLine()));
+        System.out.print("Escribe la sinopsis: ");
+        this.setSinopsis(lector.nextLine());
+        System.out.print("Dime el reparto: ");
+        this.setReparto(lector.nextLine());
+        System.out.print("Dime la sesión: ");
+        this.setSesion(lector.nextLine());
+        System.out.println("Pelicula creada.");
+        return this;
+    }
+    
+    public static void crearObjporTeclado(){
+        Pelicula peli = new Pelicula();
+        File destino = new File ("newDocObjPelis");
+        FileOutputStream ficheroDestino = null;
+        ObjectOutputStream writerObj = null;
+        peli = peli.pedirDatos();
+        try {
+            ficheroDestino = new FileOutputStream(destino,true); //ruta destino, añadir objetos no sobreescribo
+            writerObj = new ObjectOutputStream(ficheroDestino); //escritor de objetos
+            writerObj.writeObject(peli); //escribo la Pelicula que he leido en el fichero destino
+        } catch (FileNotFoundException ex) {
+            try {
+                throw new ErrorderutaException(101);
+            } catch (ErrorderutaException ex1) {                    
+                System.out.println(ex1.getMensaje());
+                registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
+            }
+        } catch (IOException ex) {
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
+        } finally {
+            try {
+                ficheroDestino.close();
+                writerObj.close();
+            } catch (IOException ex) {
+                System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+                System.out.println(ex.getCause());
+            }
+        }
+        System.out.println("Pelicula insertada en el fichero newDocObjPelis");
     }
 }
