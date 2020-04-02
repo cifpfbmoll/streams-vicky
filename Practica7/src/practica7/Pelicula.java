@@ -318,7 +318,8 @@ public class Pelicula implements Serializable{
         ObjectOutputStream writerObj = null;
         peli = peli.pedirDatos();
         try {
-            ficheroDestino = new FileOutputStream(destino,true); //ruta destino, añadir objetos no sobreescribo
+            //ficheroDestino = new FileOutputStream(destino,true); //ruta destino, añadir objetos no sobreescribo
+            ficheroDestino = new FileOutputStream(destino); //da problemas la adición ,true
             writerObj = new ObjectOutputStream(ficheroDestino); //escritor de objetos
             writerObj.writeObject(peli); //escribo la Pelicula que he leido en el fichero destino
         } catch (FileNotFoundException ex) {
