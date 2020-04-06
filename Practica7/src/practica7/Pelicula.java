@@ -16,9 +16,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static practica7.ErrorderutaException.registrarErrores;
 import static practica7.Practica7.pedirRuta;
 
@@ -271,13 +270,17 @@ public class Pelicula implements Serializable{
                 System.out.println(ex1.getMensaje());
                 registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
             }
-        }catch (EOFException ex) {
+        }catch (EOFException ex) {//excepcion que debemos controlar al leer objetos
             /*Esta excepcion hay que ponerla manualmente siempre! el IDE no la pide, hay que ponerla a mano*/
             System.out.println("Fin de fichero");
         } catch (ClassNotFoundException ex) {
             ex = new ClassNotFoundException("La clase que se está intentado leer no existe");
             System.out.println(ex.getMessage());
-        } catch (IOException ex) {
+        } catch (StreamCorruptedException e){//fuente: http://www.chuidiang.org/java/ficheros/ObjetosFichero.php
+            System.out.println("Esta excepcion ocurre cuando más de una instancia de la clase ObjectInputStream"
+                    + "abre el mismo fichero.");
+        }
+        catch (IOException ex) {
             System.out.println("Ha ocurrido un error inesperado. Más detalles:");
             System.out.println(ex.getCause());
         } finally {
@@ -318,7 +321,7 @@ public class Pelicula implements Serializable{
         ObjectOutputStream writerObj = null;
         peli = peli.pedirDatos();
         try {
-            ficheroDestino = new FileOutputStream(destino,true); //ruta destino, añadir objetos no sobreescribo
+            ficheroDestino = new FileOutputStream(destino);//da problemas la adición ,true
             writerObj = new ObjectOutputStream(ficheroDestino); //escritor de objetos
             writerObj.writeObject(peli); //escribo la Pelicula que he leido en el fichero destino
         } catch (FileNotFoundException ex) {

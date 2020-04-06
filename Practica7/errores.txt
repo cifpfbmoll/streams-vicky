@@ -96,3 +96,8 @@ practica7.Practica7.main(Practica7.java:40)
 practica7.Practica7.leoLineas(Practica7.java:310)
 practica7.Practica7.mostrarMenu(Practica7.java:63)
 practica7.Practica7.main(Practica7.java:40)
+2/4/2020 19:2:57 La ruta de origen indicada no existe
+practica7.Pelicula.crearFicheroObjPelicula(Pelicula.java:181)
+practica7.Pelicula.menuObjPeli(Pelicula.java:133)
+practica7.Practica7.mostrarMenu(Practica7.java:69)
+practica7.Practica7.main(Practica7.java:42)

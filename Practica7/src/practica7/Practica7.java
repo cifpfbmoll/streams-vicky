@@ -37,7 +37,7 @@ public class Practica7 {
         String [] encabezados = {"-----------------------","Cartelera de CineFBMoll",
             "-----------------------","-----", "Año:", "Director: ",
             "Duracion: ", "Sinopsis: ", "Reparto: ", "Sesión: ", "horas"};
-                
+        
         mostrarMenu(encabezados);
     }
     
