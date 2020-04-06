@@ -1,4 +1,0 @@
-Pepe García Hernández 5 7 3 7 10 c-5
-Juan Sánchez  García 4 5 5 7 10 7
-Adrián Hernández Sánchez 9 5 5 7 10 10
-Santiago García Sánchez 10 9 10 9 10 c-5
