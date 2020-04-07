@@ -1,0 +1,20 @@
+-------------------------------------------
+Boletín de notas CIFP FBMOLL
+-------------------------------------------
+Alumno: Santiago García Sánchez 
+------------------------------   -------
+Módulo                            Nota
+------------------------------   -------
+Lenguaje de marcas                 10
+Programación                       9
+Entornos de desarrollo             10
+Base de datos                      9
+Sistemas informáticos              10
+FOL                                c-5
+-------------------------------------------
+Nº de módulos aprobados: 5
+Nº de módulos suspendidos: 0
+Nº de módulos convalidados: 1
+-------------------------------------------
+Fecha: 7/4/2020
+Lugar: Palma de Mallorca

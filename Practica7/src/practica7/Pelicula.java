@@ -224,7 +224,8 @@ public class Pelicula implements Serializable{
             ex = new ClassNotFoundException("La clase que se está intentado leer no existe");
             System.out.println(ex.getMessage());
         } catch (EOFException ex) {
-            /*Esta excepcion hay que ponerla manualmente siempre! el IDE no la pide, hay que ponerla a mano*/
+            /*Esta excepcion hay que ponerla manualmente siempre! el IDE no la pide, hay que ponerla a mano.
+            Indica el fin de lectura del fichero*/
             System.out.println("Se ha creado el fichero: newDocObjPelis con los"
                 + " objetos leidos del fichero peliculasObj");
         } catch (IOException ex) {

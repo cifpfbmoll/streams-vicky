@@ -1,0 +1,20 @@
+-------------------------------------------
+Boletín de notas CIFP FBMOLL
+-------------------------------------------
+Alumno: Adrián Hernández Sánchez 
+------------------------------   -------
+Módulo                            Nota
+------------------------------   -------
+Lenguaje de marcas                 9
+Programación                       5
+Entornos de desarrollo             5
+Base de datos                      7
+Sistemas informáticos              10
+FOL                                10
+-------------------------------------------
+Nº de módulos aprobados: 6
+Nº de módulos suspendidos: 0
+Nº de módulos convalidados: 0
+-------------------------------------------
+Fecha: 7/4/2020
+Lugar: Palma de Mallorca
