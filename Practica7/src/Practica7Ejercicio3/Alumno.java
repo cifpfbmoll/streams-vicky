@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 package Practica7Ejercicio3;
-
-import static Practica7Ejercicio3.Main.calcularTotales;
 import static Practica7Ejercicio3.Main.registrarFecha;
 import static Practica7Ejercicio3.Main.rightpad;
 import java.io.BufferedReader;
@@ -165,7 +163,7 @@ public class Alumno implements Serializable {
             if (i==3){
                 System.out.print(alumno.getNombre() + " " + alumno.getApellidos());
             }
-            System.out.println("");//salto de linea
+            System.out.println("");//salto de linea. Lo pongo asi para que me encaje el nombre del alumno
         }
     }
     
@@ -179,7 +177,7 @@ public class Alumno implements Serializable {
             aux++;
         }
     }
-    
+      
     public static void imprimirResumen(Alumno alumno, String [] boletinTitulos) throws IOException{
         int aux = 0;//auxiliar para recorrer la array de notas
         int [] notasTotales = calcularTotales(alumno.getNotas());//este método está en el main porque en la primera parte del ejercicio no necesitaba la clase alumno, ¿seria correcto? ver con rafa
@@ -196,5 +194,26 @@ public class Alumno implements Serializable {
         }
         System.out.println("**********************************************");
         System.out.println("**********************************************\n");
+    }
+    
+    public static int [] calcularTotales(String [] notasAlumno){
+        int aprobados = 0, suspensos = 0, convalidaciones = 0;
+        int [] total = null;
+        //empezamos en 3, porqué en las tres primeras posiciones está el nombre del alumno
+        for (int i = 3; i<notasAlumno.length;i++){
+            if (notasAlumno[i].equals("c-5")){
+                convalidaciones++;
+            }
+            else if (Integer.parseInt(notasAlumno[i])<5){
+                suspensos++;
+            }
+            else{
+                aprobados++;
+            }
+        }
+        //si no asignamos el valor a la array al momento de declararla, es necesaria instanciarla a posteriori
+        total = new int[]{aprobados,suspensos,convalidaciones};
+        
+        return total;
     }
 }

@@ -5,6 +5,7 @@
  */
 package Practica7Ejercicio3;
 
+import static Practica7Ejercicio3.Alumno.calcularTotales;
 import static Practica7Ejercicio3.Alumno.crearFicheroObjAlumnos;
 import static Practica7Ejercicio3.Alumno.imprimirObjAlumno;
 import java.io.BufferedReader;
@@ -17,9 +18,6 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Scanner;
-import static practica7.Practica7.leoBytes;
-import static practica7.Practica7.leoChars;
-
 /**
  *
  * @author victoriapenas
@@ -37,11 +35,18 @@ public class Main {
         "Sistemas informáticos","FOL","-------------------------------------------",
         "Nº de módulos aprobados: ","Nº de módulos suspendidos: ","Nº de módulos convalidados: ",
         "-------------------------------------------","Fecha: ", "Lugar: Palma de Mallorca"};
-        mostrarMenu(boletinTitulos);
+        try {
+            mostrarMenu(boletinTitulos);
+        } catch (FileNotFoundException ex) {
+            System.out.println("No se ha encontrado el fichero de salida");
+        } catch (IOException ex) {
+            System.out.println("Ha ocurrido un error inesperado. Más info:");
+            System.out.println(ex.getCause());
+        }
         
     }
     
-    public static void mostrarMenu(String [] boletinTitulos){
+    public static void mostrarMenu(String [] boletinTitulos) throws FileNotFoundException,IOException{
         Scanner lector = new Scanner(System.in);
         int opcion;
         boolean salir = false;
@@ -69,12 +74,12 @@ public class Main {
         }while(salir == false);
     }
     
-    public static void generarBoletines(String [] boletinTitulos){
+    public static void generarBoletines(String [] boletinTitulos) throws FileNotFoundException, IOException{
         String linea = "";
         String [] notasAlumno = null;
         File entrada = new File("notas.txt");
         String docSalida = "";
-        try (BufferedReader lector = new BufferedReader(new FileReader(entrada))){
+        try (BufferedReader lector = new BufferedReader(new FileReader(entrada))){ //TO DO mail a Rafa
             do{
                 linea = lector.readLine();
                 if (linea != null){//tengo que poner este if, porque sino me salta la excepcion nullpointer exception
@@ -87,11 +92,6 @@ public class Main {
                 }
             } while (linea != null); //cuando llegamos al final del fichero, el buffer devuelve un null
             System.out.println("Ficheros creados con éxito.");
-        } catch (FileNotFoundException ex) {
-            System.out.println("No se ha encontrado el fichero de salida");
-        } catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado. Más info:");
-            System.out.println(ex.getCause());
         }
     }
     
@@ -103,7 +103,7 @@ public class Main {
         return docSalida;
     }
     
-    public static void escribirCabecera(String [] boletinTitulos, String [] datosAlumno, String ficheroSalida){
+    public static void escribirCabecera(String [] boletinTitulos, String [] datosAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
         String nuevaLinea = System.getProperty("line.separator");
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), StandardCharsets.UTF_8)){
             for (int i = 0; i<7; i++){
@@ -115,15 +115,10 @@ public class Main {
                 }
                 writer.append(nuevaLinea);//con esto añado un salto de linea
             }
-        } catch (FileNotFoundException ex) {
-            System.out.println("No se ha encontrado el fichero de salida");
-        } catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado. Más info:");
-            System.out.println(ex.getCause());
         }
     }
                 
-    public static void escribirContenido(String [] boletinTitulos, String [] notasAlumno, String ficheroSalida){
+    public static void escribirContenido(String [] boletinTitulos, String [] notasAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
         String nuevaLinea = System.getProperty("line.separator");
         int pos = 3; //auxiliar para escribir las notas de los alumnos, empezamos en la posición 3 de la array
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida, true), StandardCharsets.UTF_8)){
@@ -135,15 +130,10 @@ public class Main {
                 pos++;
                 writer.append(nuevaLinea);//con esto añado un salto de linea
             }
-        } catch (FileNotFoundException ex) {
-            System.out.println("No se ha encontrado el fichero de salida");
-        } catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado. Más info:");
-            System.out.println(ex.getCause());
         }
     }
     
-    public static void escribirResumen(String [] boletinTitulos, String [] notasAlumno, String ficheroSalida){
+    public static void escribirResumen(String [] boletinTitulos, String [] notasAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
         String nuevaLinea = System.getProperty("line.separator");
         int pos = 0; //auxiliar para recorrer la array notasTotales
         int [] notasTotales = calcularTotales(notasAlumno);
@@ -159,33 +149,7 @@ public class Main {
                 }
                 writer.append(nuevaLinea);//con esto añado un salto de linea
             }
-        } catch (FileNotFoundException ex) {
-            System.out.println("No se ha encontrado el fichero de salida");
-        } catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado. Más info:");
-            System.out.println(ex.getCause());
         }
-    }
-    
-    public static int [] calcularTotales(String [] notasAlumno){
-        int aprobados = 0, suspensos = 0, convalidaciones = 0;
-        int [] total = null;
-        //empezamos en 3, porqué en las tres primeras posiciones está el nombre del alumno
-        for (int i = 3; i<notasAlumno.length;i++){
-            if (notasAlumno[i].equals("c-5")){
-                convalidaciones++;
-            }
-            else if (Integer.parseInt(notasAlumno[i])<5){
-                suspensos++;
-            }
-            else{
-                aprobados++;
-            }
-        }
-        //si no asignamos el valor a la array al momento de declararla, es necesaria instanciarla a posteriori
-        total = new int[]{aprobados,suspensos,convalidaciones};
-        
-        return total;
     }
     
     public static String registrarFecha() throws IOException{
