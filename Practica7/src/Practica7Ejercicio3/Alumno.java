@@ -5,19 +5,29 @@
  */
 package Practica7Ejercicio3;
 
+import static Practica7Ejercicio3.Main.calcularTotales;
+import static Practica7Ejercicio3.Main.registrarFecha;
+import static Practica7Ejercicio3.Main.rightpad;
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.io.StreamCorruptedException;
+import practica7.ErrorderutaException;
+import static practica7.ErrorderutaException.registrarErrores;
 
 /**
  *
  * @author victoriapenas
  */
-public class Alumno {
+public class Alumno implements Serializable {
     private String nombre;
     private String apellidos;
     private String [] notas;
@@ -39,14 +49,15 @@ public class Alumno {
     
     //me creo este contructor especial para poder crear objetos a partir de una array con todos los datos
     public Alumno (String [] datosAlumno){
-        String [] notas = new String [6];//la inicializo en 6 porque habrá siempre notas de 6 asignaturas
+        String [] notasAlumno = new String [datosAlumno.length-3];//en las tres primeras posiciones tengo el nombre, el resto de datos son notas
         int pos = 3;//auxiliar para recorrer las notas. A partir de la posicion 3 tengo las notas
         this.setNombre(datosAlumno[0]);//en la posicion 0 tengo el nombre
         this.setApellidos(datosAlumno[1] + " " + datosAlumno[2]);//en las posiciones 1 y 2 tengo los apellidos
-        for (int i = 0; i<notas.length;i++){
-            notas[i] = datosAlumno[pos];  
+        for (int i = 0; i<notasAlumno.length;i++){
+            notasAlumno[i] = datosAlumno[pos]; 
             pos++;
         }
+        this.setNotas(notasAlumno);
     }
 
     public String getNombre() {
@@ -102,5 +113,88 @@ public class Alumno {
             System.out.println("Ha ocurrido un error inesperado. Más info:");
             System.out.println(ex.getCause());
         }
+    }
+    
+    public static void imprimirObjAlumno(String [] boletinTitulos){
+        File origen = new File ("alumnosObj");
+        FileInputStream ficheroOrigen = null;
+        ObjectInputStream lectorObj = null;
+        try {
+            ficheroOrigen = new FileInputStream(origen);//ruta origen
+            lectorObj = new ObjectInputStream(ficheroOrigen); //lector de objetos
+            while (true){ //mientras haya objetos sigue leyendo. Cuando ya no hay objetos el lector lanza una excepción
+                Alumno alumno = (Alumno) lectorObj.readObject(); // instancio un alumno, y leo la instancia
+                imprimirCabecera(alumno, boletinTitulos);
+                imprimirNotas(alumno, boletinTitulos);
+                imprimirResumen(alumno,boletinTitulos);
+            }
+        } catch (FileNotFoundException ex) {
+            try {
+                throw new ErrorderutaException(101);
+            } catch (ErrorderutaException ex1) {                    
+                System.out.println(ex1.getMensaje());
+                registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
+            }
+        }catch (EOFException ex) {//excepcion que debemos controlar al leer objetos
+            /*Esta excepcion hay que ponerla manualmente siempre! el IDE no la pide, hay que ponerla a mano*/
+            System.out.println("Fin de fichero");
+        } catch (ClassNotFoundException ex) {
+            ex = new ClassNotFoundException("La clase que se está intentado leer no existe");
+            System.out.println(ex.getMessage());
+        } catch (StreamCorruptedException e){//fuente: http://www.chuidiang.org/java/ficheros/ObjetosFichero.php
+            System.out.println("Esta excepcion ocurre cuando más de una instancia de la clase ObjectInputStream"
+                    + "abre el mismo fichero.");
+        }
+        catch (IOException ex) {
+            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+            System.out.println(ex.getCause());
+        } finally {
+            try {
+                ficheroOrigen.close();
+                lectorObj.close();
+            } catch (IOException ex) {
+                System.out.println("Ha ocurrido un error inesperado. Más detalles:");
+                System.out.println(ex.getCause());
+            }
+        }
+    }
+    
+    public static void imprimirCabecera(Alumno alumno, String [] boletinTitulos){
+        for (int i = 0; i<7; i++){//hasta la posicion 7 de la array están los datos de la cabecera
+            System.out.print(boletinTitulos[i]);
+            if (i==3){
+                System.out.print(alumno.getNombre() + " " + alumno.getApellidos());
+            }
+            System.out.println("");//salto de linea
+        }
+    }
+    
+    public static void imprimirNotas(Alumno alumno, String [] boletinTitulos){
+        int aux = 0;//auxiliar para recorrer la array de notas
+        for (int i = 7; i<=12; i++){//hasta la posicion 12 están los titulos del contenido
+            /*con la funcion rightpad pongo los espacios de la derecha,
+            siendo 35 la longitud total que tiene que acer la linea. esta funcion está en el main*/
+            System.out.print(rightpad(boletinTitulos[i],35));
+            System.out.println(alumno.getNotas()[aux]);
+            aux++;
+        }
+    }
+    
+    public static void imprimirResumen(Alumno alumno, String [] boletinTitulos) throws IOException{
+        int aux = 0;//auxiliar para recorrer la array de notas
+        int [] notasTotales = calcularTotales(alumno.getNotas());//este método está en el main porque en la primera parte del ejercicio no necesitaba la clase alumno, ¿seria correcto? ver con rafa
+        for (int i = 13; i<boletinTitulos.length; i++){
+            System.out.print(boletinTitulos[i]);
+            if (i > 13 && i < 17){//distinto a 13, porque en la posicion 13 solo quiero imprimir na linea divisoria
+                System.out.print(notasTotales[aux]);
+                aux++;
+            }
+            if(i == 18){//en la posicion 18 de la array registro la fecha
+                System.out.print(registrarFecha());
+            }
+            System.out.println("");//con esto añado un salto de linea
+        }
+        System.out.println("**********************************************");
+        System.out.println("**********************************************\n");
     }
 }

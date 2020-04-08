@@ -6,6 +6,7 @@
 package Practica7Ejercicio3;
 
 import static Practica7Ejercicio3.Alumno.crearFicheroObjAlumnos;
+import static Practica7Ejercicio3.Alumno.imprimirObjAlumno;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,7 +58,7 @@ public class Main {
                     break;
                 case 2:
                     crearFicheroObjAlumnos();
-                    //TO DO imprimirObjAlumnos();
+                    imprimirObjAlumno(boletinTitulos);
                     break;
                 case 3:
                     salir = true;
