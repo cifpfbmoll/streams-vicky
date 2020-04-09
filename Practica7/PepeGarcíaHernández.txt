@@ -5,16 +5,16 @@ Alumno: Pepe García Hernández
 ------------------------------   -------
 Módulo                            Nota
 ------------------------------   -------
-Lenguaje de marcas                 5
+Lenguaje de marcas                 1
 Programación                       7
 Entornos de desarrollo             3
 Base de datos                      7
 Sistemas informáticos              10
 FOL                                c-5
 -------------------------------------------
-Nº de módulos aprobados: 4
-Nº de módulos suspendidos: 1
+Nº de módulos aprobados: 3
+Nº de módulos suspendidos: 2
 Nº de módulos convalidados: 1
 -------------------------------------------
-Fecha: 7/4/2020
+Fecha: 9/4/2020
 Lugar: Palma de Mallorca

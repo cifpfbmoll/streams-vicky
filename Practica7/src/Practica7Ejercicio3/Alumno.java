@@ -4,10 +4,9 @@
  * and open the template in the editor.
  */
 package Practica7Ejercicio3;
-import static Practica7Ejercicio3.Main.registrarFecha;
-import static Practica7Ejercicio3.Main.rightpad;
+import static Practica7Ejercicio3.metodosGenerales.registrarFecha;
+import static Practica7Ejercicio3.metodosGenerales.rightpad;
 import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,10 +15,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.io.StreamCorruptedException;
-import practica7.ErrorderutaException;
-import static practica7.ErrorderutaException.registrarErrores;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
@@ -27,21 +25,17 @@ import static practica7.ErrorderutaException.registrarErrores;
  */
 public class Alumno implements Serializable {
     private String nombre;
-    private String apellidos;
+    private String primerApellido;
+    private String segundoApellido;
     private String [] notas;
 
     public Alumno() {
     }
-
-    public Alumno(String nombre, String apellidos, String[] notas) {
-        this.setNombre(nombre);
-        this.setApellidos(apellidos);
-        this.setNotas(notas);
-    }
     
     public Alumno(Alumno alumno) {
         this.setNombre(alumno.getNombre());
-        this.setApellidos(alumno.getApellidos());
+        this.setPrimerApellido(alumno.getPrimerApellido());
+        this.setSegundoApellido(alumno.getSegundoApellido());
         this.setNotas(alumno.getNotas());
     }
     
@@ -50,7 +44,8 @@ public class Alumno implements Serializable {
         String [] notasAlumno = new String [datosAlumno.length-3];//en las tres primeras posiciones tengo el nombre, el resto de datos son notas
         int pos = 3;//auxiliar para recorrer las notas. A partir de la posicion 3 tengo las notas
         this.setNombre(datosAlumno[0]);//en la posicion 0 tengo el nombre
-        this.setApellidos(datosAlumno[1] + " " + datosAlumno[2]);//en las posiciones 1 y 2 tengo los apellidos
+        this.setPrimerApellido(datosAlumno[1]);//en la posicion 1 tengo el primer apellido
+        this.setSegundoApellido(datosAlumno[2]); //en la posicion 2 tengo el segundo apellido
         for (int i = 0; i<notasAlumno.length;i++){
             notasAlumno[i] = datosAlumno[pos]; 
             pos++;
@@ -66,13 +61,23 @@ public class Alumno implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getApellidos() {
-        return apellidos;
+    public String getPrimerApellido() {
+        return primerApellido;
     }
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+    public void setPrimerApellido(String primerApellido) {
+        this.primerApellido = primerApellido;
     }
+
+    public String getSegundoApellido() {
+        return segundoApellido;
+    }
+
+    public void setSegundoApellido(String segundoApellido) {
+        this.segundoApellido = segundoApellido;
+    }
+
+
 
     public String[] getNotas() {
         return notas;
@@ -82,7 +87,7 @@ public class Alumno implements Serializable {
         this.notas = notas;
     }
     
-    public static void crearFicheroObjAlumnos(){
+    public static void crearFicheroObjAlumnos() throws FileNotFoundException, IOException, ErrornotaException{
         File entrada = new File("notas.txt"); //ruta del fichero de lectura
         BufferedReader lector = null; //lector del fichero de origen
         String linea = ""; //auxiliar de lectura
@@ -99,21 +104,18 @@ public class Alumno implements Serializable {
                 linea = lector.readLine();
                 if (linea != null){
                     datosAlumno = linea.split(" ");
+                    comprobarNotas(datosAlumno);//compruebo que no haya alumnos con notas erroneas
                     alumno = new Alumno(datosAlumno);
-                    for (int i = 0;i<datosAlumno.length;i++){
-                        writer.writeObject(alumno);
-                    }
+                    writer.writeObject(alumno);
                 }
-            }while(linea == null);
-        } catch (FileNotFoundException ex) {
-            System.out.println("fichero de salida no encontrado");
-        } catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado. Más info:");
-            System.out.println(ex.getCause());
+            }while(linea != null);
+        } finally {
+            docObj.close();
+            writer.close();
         }
     }
     
-    public static void imprimirObjAlumno(String [] boletinTitulos){
+    public static void imprimirBoletin() throws FileNotFoundException, ClassNotFoundException, IOException{
         File origen = new File ("alumnosObj");
         FileInputStream ficheroOrigen = null;
         ObjectInputStream lectorObj = null;
@@ -122,72 +124,56 @@ public class Alumno implements Serializable {
             lectorObj = new ObjectInputStream(ficheroOrigen); //lector de objetos
             while (true){ //mientras haya objetos sigue leyendo. Cuando ya no hay objetos el lector lanza una excepción
                 Alumno alumno = (Alumno) lectorObj.readObject(); // instancio un alumno, y leo la instancia
-                imprimirCabecera(alumno, boletinTitulos);
-                imprimirNotas(alumno, boletinTitulos);
-                imprimirResumen(alumno,boletinTitulos);
+                alumno.imprimirCabecera();
+                alumno.imprimirNotas();
+                alumno.imprimirResumen();
             }
-        } catch (FileNotFoundException ex) {
-            try {
-                throw new ErrorderutaException(101);
-            } catch (ErrorderutaException ex1) {                    
-                System.out.println(ex1.getMensaje());
-                registrarErrores(ex1.getMensaje(),ex1.getStackTrace());
-            }
-        }catch (EOFException ex) {//excepcion que debemos controlar al leer objetos
-            /*Esta excepcion hay que ponerla manualmente siempre! el IDE no la pide, hay que ponerla a mano*/
-            System.out.println("Fin de fichero");
-        } catch (ClassNotFoundException ex) {
-            ex = new ClassNotFoundException("La clase que se está intentado leer no existe");
-            System.out.println(ex.getMessage());
-        } catch (StreamCorruptedException e){//fuente: http://www.chuidiang.org/java/ficheros/ObjetosFichero.php
-            System.out.println("Esta excepcion ocurre cuando más de una instancia de la clase ObjectInputStream"
-                    + "abre el mismo fichero.");
-        }
-        catch (IOException ex) {
-            System.out.println("Ha ocurrido un error inesperado. Más detalles:");
-            System.out.println(ex.getCause());
         } finally {
-            try {
-                ficheroOrigen.close();
-                lectorObj.close();
-            } catch (IOException ex) {
-                System.out.println("Ha ocurrido un error inesperado. Más detalles:");
-                System.out.println(ex.getCause());
-            }
+            ficheroOrigen.close();
+            lectorObj.close();
         }
     }
     
-    public static void imprimirCabecera(Alumno alumno, String [] boletinTitulos){
-        for (int i = 0; i<7; i++){//hasta la posicion 7 de la array están los datos de la cabecera
-            System.out.print(boletinTitulos[i]);
+    public void imprimirCabecera(){
+        String [] plantilla = {"-------------------------------------------",
+        "Boletín de notas CIFP FBMOLL","-------------------------------------------",
+        "Alumno: ","------------------------------   -------",
+        "Módulo                            Nota","------------------------------   -------"};
+        for (int i = 0; i<plantilla.length; i++){
+            System.out.print(plantilla[i]);
             if (i==3){
-                System.out.print(alumno.getNombre() + " " + alumno.getApellidos());
+                System.out.print(this.getNombre() + " " + this.getPrimerApellido() + " " + this.getSegundoApellido());
             }
             System.out.println("");//salto de linea. Lo pongo asi para que me encaje el nombre del alumno
         }
     }
     
-    public static void imprimirNotas(Alumno alumno, String [] boletinTitulos){
+    public void imprimirNotas(){
+        String [] plantilla = {"Lenguaje de marcas","Programación","Entornos de desarrollo",
+            "Base de datos","Sistemas informáticos","FOL"};
         int aux = 0;//auxiliar para recorrer la array de notas
-        for (int i = 7; i<=12; i++){//hasta la posicion 12 están los titulos del contenido
+        for (int i = 0; i<plantilla.length; i++){
             /*con la funcion rightpad pongo los espacios de la derecha,
             siendo 35 la longitud total que tiene que acer la linea. esta funcion está en el main*/
-            System.out.print(rightpad(boletinTitulos[i],35));
-            System.out.println(alumno.getNotas()[aux]);
+            System.out.print(rightpad(plantilla[i],35));
+            System.out.println(this.getNotas()[aux]);
             aux++;
         }
     }
       
-    public static void imprimirResumen(Alumno alumno, String [] boletinTitulos) throws IOException{
+    public void imprimirResumen() throws IOException{
+        String [] plantilla = {"-------------------------------------------",
+        "Nº de módulos aprobados: ","Nº de módulos suspendidos: ","Nº de módulos convalidados: ",
+        "-------------------------------------------","Fecha: ", "Lugar: Palma de Mallorca"};
         int aux = 0;//auxiliar para recorrer la array de notas
-        int [] notasTotales = calcularTotales(alumno.getNotas());//este método está en el main porque en la primera parte del ejercicio no necesitaba la clase alumno, ¿seria correcto? ver con rafa
-        for (int i = 13; i<boletinTitulos.length; i++){
-            System.out.print(boletinTitulos[i]);
-            if (i > 13 && i < 17){//distinto a 13, porque en la posicion 13 solo quiero imprimir na linea divisoria
+        int [] notasTotales = calcularTotales(this.getNotas());
+        for (int i = 0; i<plantilla.length; i++){
+            System.out.print(plantilla[i]);
+            if (i > 0 && i < 4){//Entre las posiciones del 1 al 3 imprimir el sumatorio de notas
                 System.out.print(notasTotales[aux]);
                 aux++;
             }
-            if(i == 18){//en la posicion 18 de la array registro la fecha
+            if(i == 5){//en la posicion 5 de la array registro la fecha
                 System.out.print(registrarFecha());
             }
             System.out.println("");//con esto añado un salto de linea
@@ -199,8 +185,7 @@ public class Alumno implements Serializable {
     public static int [] calcularTotales(String [] notasAlumno){
         int aprobados = 0, suspensos = 0, convalidaciones = 0;
         int [] total = null;
-        //empezamos en 3, porqué en las tres primeras posiciones está el nombre del alumno
-        for (int i = 3; i<notasAlumno.length;i++){
+        for (int i = 0; i<notasAlumno.length;i++){
             if (notasAlumno[i].equals("c-5")){
                 convalidaciones++;
             }
@@ -215,5 +200,127 @@ public class Alumno implements Serializable {
         total = new int[]{aprobados,suspensos,convalidaciones};
         
         return total;
+    }
+    
+    public static void generarBoletines() throws FileNotFoundException, IOException, ErrornotaException{
+        String linea = "";
+        String [] notasAlumno = null;
+        File entrada = new File("notas.txt");
+        String docSalida = "";
+        try (BufferedReader lector = new BufferedReader(new FileReader(entrada))){ //TO DO mail a Rafa
+            do{
+                linea = lector.readLine();
+                if (linea != null){//tengo que poner este if, porque sino me salta la excepcion nullpointer exception
+                    notasAlumno = linea.split(" ");
+                    comprobarNotas(notasAlumno);//compruebo que no hay notas negativas ni ceros
+                    /*creo el fichero de salida a partir de los datos del alumno*/
+                    docSalida = (generarFicheroSalida(notasAlumno)+".txt");
+                    escribirCabecera(notasAlumno, docSalida);
+                    escribirContenido(notasAlumno, docSalida);
+                    escribirResumen(notasAlumno,docSalida);
+                }
+            } while (linea != null); //cuando llegamos al final del fichero, el buffer devuelve un null
+            System.out.println("Ficheros creados con éxito.");
+        }
+    }
+    
+    public static String generarFicheroSalida(String [] datosAlumno){
+        String docSalida = "";
+        for (int i = 0;i<3;i++){//el nombre completo está desde la posicion 0 a las 2
+            docSalida += datosAlumno[i];
+        }
+        return docSalida;
+    }
+    
+    public static void escribirCabecera(String [] datosAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
+        String [] plantilla = {"-------------------------------------------",
+            "Boletín de notas CIFP FBMOLL","-------------------------------------------",
+        "Alumno: ","------------------------------   -------",
+        "Módulo                            Nota","------------------------------   -------"};
+        String nuevaLinea = System.getProperty("line.separator");
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), StandardCharsets.UTF_8)){
+            for (int i = 0; i<plantilla.length; i++){
+                writer.write(plantilla[i]);
+                if (i==3){// a partir de la posicion 3 debo escribir el nombre del alumno
+                    for(int j = 0; j<3;j++){//escribo el nombre del alumno
+                        writer.write(datosAlumno[j] + " ");
+                    }
+                }
+                writer.append(nuevaLinea);//con esto añado un salto de linea
+            }
+        }
+    }
+                
+    public static void escribirContenido(String [] notasAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
+        String [] plantilla = {"Lenguaje de marcas","Programación","Entornos de desarrollo","Base de datos",
+        "Sistemas informáticos","FOL"};
+        String nuevaLinea = System.getProperty("line.separator");
+        int pos = 3; //auxiliar para escribir las notas de los alumnos, empezamos en la posición 3 de la array
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida, true), StandardCharsets.UTF_8)){
+            for (int i = 0; i<plantilla.length; i++){
+                /*con la funcion rightpad pongo los espacios de la derecha,
+                siendo 35 la longitud total que tiene que acer la linea*/
+                writer.write(rightpad(plantilla[i],35));
+                writer.write(notasAlumno[pos]);
+                pos++;
+                writer.append(nuevaLinea);//con esto añado un salto de linea
+            }
+        }
+    }
+    
+    public static void escribirResumen(String [] notasAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
+        String [] plantilla = {"-------------------------------------------",
+        "Nº de módulos aprobados: ","Nº de módulos suspendidos: ","Nº de módulos convalidados: ",
+        "-------------------------------------------","Fecha: ", "Lugar: Palma de Mallorca"};
+        String nuevaLinea = System.getProperty("line.separator");
+        int pos = 0; //auxiliar para recorrer la array notasTotales
+        int [] notasTotales = calcularTotales(notasAlumno);
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida, true), StandardCharsets.UTF_8)){
+            for (int i = 0; i<plantilla.length; i++){
+                writer.write(plantilla[i]);
+                if (i > 0 && i < 4){//distinto a 13, porque en la posicion 13 solo quiero imprimir la linea divisoria
+                    writer.write(Integer.toString(notasTotales[pos]));//convierto a String para poder escribir
+                    pos++;
+                }
+                if(i == 5){//en la posicion 18 de la array registro la fecha
+                    writer.write(registrarFecha());
+                }
+                writer.append(nuevaLinea);//con esto añado un salto de linea
+            }
+        }
+    }
+    
+    public static void comprobarNotas(String [] notas) throws ErrornotaException{
+        String modulo = "";
+        for (int i = 3; i<notas.length;i++){//en las tres primeras posiciones tengo el nombre del alumno
+            if (!notas[i].equals("c-5")){
+                if (Integer.parseInt(notas[i])<=0){
+                    switch (i) {
+                        case 3:
+                            modulo = "Lenguaje de marcas";
+                            break;
+                        case 4:
+                            modulo = "Programación";
+                            break;
+                        case 5:
+                            modulo = "Entornos de desarrollo";
+                            break;
+                        case 6:
+                            modulo = "Base de datos";
+                            break;
+                        case 7:
+                            modulo = "Sistemas informáticos";
+                            break;
+                        case 8:
+                            modulo = "FOL";
+                            break;
+                        default:
+                            break;
+                    }
+                    throw new ErrornotaException((notas[0] + " " + notas[1] + " " + notas[2]),
+                            Integer.parseInt(notas[i]),modulo);
+                }
+            }
+        }
     }
 }
