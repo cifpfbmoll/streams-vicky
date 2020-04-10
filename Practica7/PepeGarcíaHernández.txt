@@ -16,5 +16,5 @@ Nº de módulos aprobados: 3
 Nº de módulos suspendidos: 2
 Nº de módulos convalidados: 1
 -------------------------------------------
-Fecha: 9/4/2020
+Fecha: 10/4/2020
 Lugar: Palma de Mallorca

@@ -1,0 +1,15 @@
+10/4/2020El alumno Pepe García Hernández no puede tener un 0 en el módulo de Lenguaje de marcas. Debes poner una nota válida
+Practica7Ejercicio3.Alumno.comprobarNotas(Alumno.java:326)
+Practica7Ejercicio3.Alumno.generarBoletines(Alumno.java:211)
+Practica7Ejercicio3.Main.mostrarMenu(Main.java:66)
+Practica7Ejercicio3.Main.main(Main.java:26)
+10/4/2020 11:57:15 - ERROR: El alumno Pepe García Hernández no puede tener un 0 en el módulo de Lenguaje de marcas. Debes poner una nota válida
+Traza de la pila de ejecución: Practica7Ejercicio3.Alumno.comprobarNotas(Alumno.java:326)
+Practica7Ejercicio3.Alumno.generarBoletines(Alumno.java:211)
+Practica7Ejercicio3.Main.mostrarMenu(Main.java:66)
+Practica7Ejercicio3.Main.main(Main.java:26)
+10/4/2020 11:57:20 - ERROR: El alumno Pepe García Hernández no puede tener un 0 en el módulo de Lenguaje de marcas. Debes poner una nota válida
+Traza de la pila de ejecución: Practica7Ejercicio3.Alumno.comprobarNotas(Alumno.java:326)
+Practica7Ejercicio3.Alumno.crearFicheroObjAlumnos(Alumno.java:110)
+Practica7Ejercicio3.Main.mostrarMenu(Main.java:69)
+Practica7Ejercicio3.Main.main(Main.java:26)

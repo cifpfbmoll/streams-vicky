@@ -30,13 +30,19 @@ public class Main {
             ex = new ClassNotFoundException("La clase que se está intentado leer no existe");
             System.out.println(ex.getMessage());
         } catch (StreamCorruptedException e){//fuente: http://www.chuidiang.org/java/ficheros/ObjetosFichero.php
-            System.out.println("Esta excepcion ocurre cuando más de una instancia de la clase ObjectInputStream"
-                    + "abre el mismo fichero.");
+            System.out.println("Esta excepcion ocurre cuando más de una instancia de"
+                    + "la clase ObjectInputStream abre el mismo fichero.");
         } catch (EOFException ex) {//excepcion que debemos controlar al leer objetos
             /*Esta excepcion hay que ponerla manualmente siempre! el IDE no la pide, hay que ponerla a mano*/
             System.out.println("Fin de fichero");
         } catch (ErrornotaException ex) {
-            System.out.println(ex.getMensaje());
+            try {
+                System.out.println(ex.getMensaje());
+                ex.registarErrores(ex.getMensaje(),ex.getStackTrace());
+            } catch (IOException ex1) {
+                System.out.println("Ha ocurrido un error inesperado. Más info:");
+                System.out.println(ex1.getCause());
+            }
         } catch (IOException ex) {
             System.out.println("Ha ocurrido un error inesperado. Más info:");
             System.out.println(ex.getCause());

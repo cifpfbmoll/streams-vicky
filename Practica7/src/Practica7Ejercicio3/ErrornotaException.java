@@ -5,6 +5,13 @@
  */
 package Practica7Ejercicio3;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import static Practica7Ejercicio3.metodosGenerales.registrarFecha;
+import static Practica7Ejercicio3.metodosGenerales.registrarHora;
+
 /**
  *
  * @author victoriapenas
@@ -56,6 +63,21 @@ public class ErrornotaException extends Exception{
     public void setMensaje(String nombreCompletoAlumno, int nota, String modulo) {
         this.mensaje = "El alumno "+ nombreCompletoAlumno +" no puede tener un " + nota
                 + " en el módulo de " + modulo + ". Debes poner una nota válida";
+    }
+    
+    public static void registarErrores(String errorMessage, StackTraceElement [] pila) throws IOException{
+        File salida = new File("logErroresAlumnos.txt");
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(salida, true))){
+            writer.write(registrarFecha() + " ");
+            writer.write(registrarHora() + " - ");
+            writer.write("ERROR: " + errorMessage);
+            writer.newLine();
+            writer.write("Traza de la pila de ejecución: ");
+            for (int i = 0; i<pila.length;i++){
+                writer.write(pila[i].toString());//el metodo toString envia las pila de ejecución
+                writer.newLine();
+            }
+        }
     }
     
 }

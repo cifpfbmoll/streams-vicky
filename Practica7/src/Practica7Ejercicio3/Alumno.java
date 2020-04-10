@@ -4,7 +4,10 @@
  * and open the template in the editor.
  */
 package Practica7Ejercicio3;
+import static Practica7Ejercicio3.metodosGenerales.cabeceraBoletin;
+import static Practica7Ejercicio3.metodosGenerales.contenidoBoletin;
 import static Practica7Ejercicio3.metodosGenerales.registrarFecha;
+import static Practica7Ejercicio3.metodosGenerales.resumenBoletin;
 import static Practica7Ejercicio3.metodosGenerales.rightpad;
 import java.io.BufferedReader;
 import java.io.File;
@@ -124,6 +127,7 @@ public class Alumno implements Serializable {
             lectorObj = new ObjectInputStream(ficheroOrigen); //lector de objetos
             while (true){ //mientras haya objetos sigue leyendo. Cuando ya no hay objetos el lector lanza una excepción
                 Alumno alumno = (Alumno) lectorObj.readObject(); // instancio un alumno, y leo la instancia
+                System.out.println("\n****************NUEVO ALUMNO****************\n");
                 alumno.imprimirCabecera();
                 alumno.imprimirNotas();
                 alumno.imprimirResumen();
@@ -135,10 +139,7 @@ public class Alumno implements Serializable {
     }
     
     public void imprimirCabecera(){
-        String [] plantilla = {"-------------------------------------------",
-        "Boletín de notas CIFP FBMOLL","-------------------------------------------",
-        "Alumno: ","------------------------------   -------",
-        "Módulo                            Nota","------------------------------   -------"};
+        String [] plantilla = cabeceraBoletin();
         for (int i = 0; i<plantilla.length; i++){
             System.out.print(plantilla[i]);
             if (i==3){
@@ -149,8 +150,7 @@ public class Alumno implements Serializable {
     }
     
     public void imprimirNotas(){
-        String [] plantilla = {"Lenguaje de marcas","Programación","Entornos de desarrollo",
-            "Base de datos","Sistemas informáticos","FOL"};
+        String [] plantilla = contenidoBoletin();
         int aux = 0;//auxiliar para recorrer la array de notas
         for (int i = 0; i<plantilla.length; i++){
             /*con la funcion rightpad pongo los espacios de la derecha,
@@ -162,9 +162,7 @@ public class Alumno implements Serializable {
     }
       
     public void imprimirResumen() throws IOException{
-        String [] plantilla = {"-------------------------------------------",
-        "Nº de módulos aprobados: ","Nº de módulos suspendidos: ","Nº de módulos convalidados: ",
-        "-------------------------------------------","Fecha: ", "Lugar: Palma de Mallorca"};
+        String [] plantilla = resumenBoletin();
         int aux = 0;//auxiliar para recorrer la array de notas
         int [] notasTotales = calcularTotales(this.getNotas());
         for (int i = 0; i<plantilla.length; i++){
@@ -178,14 +176,12 @@ public class Alumno implements Serializable {
             }
             System.out.println("");//con esto añado un salto de linea
         }
-        System.out.println("**********************************************");
-        System.out.println("**********************************************\n");
     }
     
     public static int [] calcularTotales(String [] notasAlumno){
         int aprobados = 0, suspensos = 0, convalidaciones = 0;
         int [] total = null;
-        for (int i = 0; i<notasAlumno.length;i++){
+        for (int i = 0; i<notasAlumno.length;i++){//el metodo static le envia solo las notas, el de escritura todo
             if (notasAlumno[i].equals("c-5")){
                 convalidaciones++;
             }
@@ -233,10 +229,7 @@ public class Alumno implements Serializable {
     }
     
     public static void escribirCabecera(String [] datosAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
-        String [] plantilla = {"-------------------------------------------",
-            "Boletín de notas CIFP FBMOLL","-------------------------------------------",
-        "Alumno: ","------------------------------   -------",
-        "Módulo                            Nota","------------------------------   -------"};
+        String [] plantilla = cabeceraBoletin();
         String nuevaLinea = System.getProperty("line.separator");
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida), StandardCharsets.UTF_8)){
             for (int i = 0; i<plantilla.length; i++){
@@ -252,8 +245,7 @@ public class Alumno implements Serializable {
     }
                 
     public static void escribirContenido(String [] notasAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
-        String [] plantilla = {"Lenguaje de marcas","Programación","Entornos de desarrollo","Base de datos",
-        "Sistemas informáticos","FOL"};
+        String [] plantilla = contenidoBoletin();
         String nuevaLinea = System.getProperty("line.separator");
         int pos = 3; //auxiliar para escribir las notas de los alumnos, empezamos en la posición 3 de la array
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida, true), StandardCharsets.UTF_8)){
@@ -268,26 +260,39 @@ public class Alumno implements Serializable {
         }
     }
     
-    public static void escribirResumen(String [] notasAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
-        String [] plantilla = {"-------------------------------------------",
-        "Nº de módulos aprobados: ","Nº de módulos suspendidos: ","Nº de módulos convalidados: ",
-        "-------------------------------------------","Fecha: ", "Lugar: Palma de Mallorca"};
+    public static void escribirResumen(String [] datosAlumno, String ficheroSalida) throws FileNotFoundException, IOException{
+        String [] plantilla = resumenBoletin();
         String nuevaLinea = System.getProperty("line.separator");
         int pos = 0; //auxiliar para recorrer la array notasTotales
-        int [] notasTotales = calcularTotales(notasAlumno);
+        /*el metodo calcular notas solo debe recibir las notas, por lo tanto,
+        con el método extraerNotas depuramos la array elimnando el nombre y dejando unicamente las notas del alumno*/
+        String [] notas = extraerNotas(datosAlumno);
+        int [] notasTotales = calcularTotales(notas);
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ficheroSalida, true), StandardCharsets.UTF_8)){
             for (int i = 0; i<plantilla.length; i++){
                 writer.write(plantilla[i]);
-                if (i > 0 && i < 4){//distinto a 13, porque en la posicion 13 solo quiero imprimir la linea divisoria
+                if (i > 0 && i < 4){
                     writer.write(Integer.toString(notasTotales[pos]));//convierto a String para poder escribir
                     pos++;
                 }
-                if(i == 5){//en la posicion 18 de la array registro la fecha
+                if(i == 5){//en la posicion 5 de la array registro la fecha
                     writer.write(registrarFecha());
                 }
                 writer.append(nuevaLinea);//con esto añado un salto de linea
             }
         }
+    }
+    
+    /*metodo para extraer las notas de una fila de datos del alumno*/
+    public static String [] extraerNotas(String [] datosAlumno){
+        String [] notas = new String [datosAlumno.length-3];
+        int aux = 3;//las notas están a partir de la posicion tres
+        for (int i = 0; i<datosAlumno.length-3;i++){//le resto tres para no salirme de rango
+            notas[i] = datosAlumno[aux];
+            aux++;
+        }
+        
+        return notas;
     }
     
     public static void comprobarNotas(String [] notas) throws ErrornotaException{
