@@ -6,14 +6,13 @@
 package Practica7Ejercicio3;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Calendar;
 
 /**
  *
  * En esta clase están los métodos generales y útiles para todo el programa
  */
-public class metodosGenerales implements Serializable{//¿Es necesario el implements serializable?
+public class metodosGenerales{
     
     public static String registrarFecha() throws IOException{
         //fuente: http://lineadecodigo.com/java/obtener-la-hora-en-java/
