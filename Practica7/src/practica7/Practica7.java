@@ -23,8 +23,13 @@ import static practica7.ErrorderutaException.registrarErrores;
 import static practica7.Pelicula.menuObjPeli;
 
 /**
- *
+ * <h1>Paquete Practica7</h1>
+ * <p><b>Practica7</b> implementa un programa para la lectura y escritura de ficheros en
+ * tres formatos: byte a byte, caracter a caracter y linea a linea mediante buffers.</p>
+ * 
  * @author victoriapenas
+ * @version 1.0
+ * @since 2020-03-21
  */
 public class Practica7 {
 
@@ -33,14 +38,23 @@ public class Practica7 {
      */
     public static void main(String[] args) {
         
-        //array de encabezados
-        String [] encabezados = {"-----------------------","Cartelera de CineFBMoll",
+        /**
+         *  Array de Strings con los titulos del encabezado.
+         */
+        final String [] encabezados = {"-----------------------","Cartelera de CineFBMoll",
             "-----------------------","-----", "Año:", "Director: ",
             "Duracion: ", "Sinopsis: ", "Reparto: ", "Sesión: ", "horas"};
         
         mostrarMenu(encabezados);
     }
     
+    /**
+     * <h2>Método para imprimir el menu por consola.</h2>
+     * <p>El método <b>mostrarMenu</b> imprime por consola un menu con las
+     * diferentes opciones que se pueden realizar en este programa.<p>
+     * 
+     * @param encabezados Array de Strings con los titulos del encabezado.
+     */
     public static void mostrarMenu(String [] encabezados){
         Scanner lector = new Scanner(System.in);
         int opcion;
@@ -76,6 +90,23 @@ public class Practica7 {
         }while(salir == false);
     }
     
+    /**
+     * <h2>Método para obtener la ruta del archivo de escritura o de lectura.</h2>
+     * <p>El método <b>pedirRuta</b> pide por teclaro dónde se encuentra ubicado
+     * el archivo desde dónde se tiene que hacer una lectura de un fichero o en
+     * qué archivo se debe realizar la escritura.</p>
+     * 
+     * @param origenEntrada Condicion para identificar si la ruta que debe calcular
+     * es de origen, es decir, para lectura o de salida, es decir, para escritura
+     * @return devuelve la ruta dónde está ubicado el fichero.
+     * 
+     * ErrorderutaException Excepcion que ocurre en el caso de que no
+     * se indique la ruta con la ubicación del archivo. Todos los errores quedan
+     * registrados en un fichero de logs.
+     * 
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
+     * 
+     */
     public static String pedirRuta(String origenEntrada){
         Scanner lector = new Scanner(System.in);
         System.out.println("Dime la ruta del fichero de " + origenEntrada);
@@ -91,13 +122,33 @@ public class Practica7 {
                 }
             }            
         }
-
         return ruta;
     }
     
-    /*con este método leo byte a byte pero no puedo especificar el encoding a utf-8 
-    y en la consola me lo imprime mal, sin embargo, al haber guardado el archivo de texto
-    con el encoding correctamente, se transcribe bien*/
+    /**
+     * <h2>Método para leer byte a byte y escribir los bytes leido a un fichero
+     * mediante el uso de objetos de tipo FileInputStream y FileOutputStream.</h2>
+     * <p>El método <b>leoBytes</b> realiza un lectura byte a byte y la escritura
+     * de los bytes leidos a los ficheros indicados por el usuario mediante el
+     * método pedirRuta. Además, escribe los títulos del encabezado en el fichero
+     * de salida mediante el método escribirCabecera.</p>
+     * <p>En este método no se puede especificar el encoding, por ejemplo utf-8,
+     * por lo tanto, al imprimir los bytes leidos por consola no tiene en cuenta
+     * los caracteres con acentos y no los imprime correctamente. Sin embargo,
+     * si el archivo de origen está guardado con el encoding especificando, se
+     * transcribe respetándo el formato de origen.</p>
+     * 
+     * @see #pedirRuta(java.lang.String) 
+     * @see #escribirCabecera(java.lang.String[], java.lang.String)
+     * @see java.io.FileInputStream
+     * @see java.io.FileOutputStream
+     * 
+     * @param encabezados Array de Strings con los titulos del encabezado.
+     * FileNotFoundException Excepcion por no encontrar la ruta indicada
+     * IOException Excepcion derivada del uso de los objetos BufferedReader
+     * 
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
+     */
     public static void leoBytes(String [] encabezados){
         String origen = pedirRuta("origen");
         String destino = pedirRuta("destino");
@@ -145,9 +196,6 @@ public class Practica7 {
                     writer.write(encabezados[pos].getBytes());//después del ultimo caracter escribo la ultima string
                 }
             }while(letra != -1);          
-        } catch (UnsupportedEncodingException ex) {
-            ex = new UnsupportedEncodingException("El encoding indicado no es correcto.");
-            System.out.println(ex.getMessage());
         } catch (FileNotFoundException ex) {
             try {
                 throw new ErrorderutaException(101);
@@ -161,7 +209,35 @@ public class Practica7 {
         }
     }
     
-    //con este método mantengo el formato de encode UTF-8 en consola y en fichero destino
+     /**
+     * @deprecated No cumple con los objetivos de la practica. Usar el método leoBytes
+     * @see #leoBytes(java.lang.String[])
+     * 
+     * <h2>Método para leer caracter a caracter y escribir mediante el uso de objetos
+     * OutputStreamWriter, InputStreamReader, FileInputStream, FileOutputStream.</h2>
+     * <p>El método <b>leoBytesVersion2</b> realiza un lectura y escritura mediante el
+     * encode UTF-8, de los ficheros indicados por el usuario mediante el método pedirRuta.
+     * De esta forma tanto al imprimir por consola como al escribir en el fichero de 
+     * destino se respesta el encode y los caracteres con acento se visualizan correctamente.
+     * Además, escribe los títulos del encabezado en el fichero de salida mediante
+     * el método escribirCabecera.</p>
+     * 
+     * @see #pedirRuta(java.lang.String)
+     * @see #escribirCabecera(java.lang.String[], java.lang.String) 
+     * @see java.io.OutputStreamWriter
+     * @see java.io.InputStreamReader
+     * @see java.io.FileInputStream
+     * @see java.io.FileOutputStream
+     * 
+     * @param encabezados Array de Strings con los titulos del encabezado
+     * 
+     * FileNotFoundException Excepcion por no encontrar la ruta indicada
+     * ErrorderutaException Excepcion por no encontrar la ruta indicada
+     * UnsupportedEncodingException Excepcion por utilizar un encode incorrecto
+     * IOException Excepcion derivada del uso de los objetos BufferedReader
+     * 
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[])
+     */
     public static void leoBytesVersion2(String [] encabezados){
         String origen = pedirRuta("origen");
         String destino = pedirRuta("destino");
@@ -226,6 +302,28 @@ public class Practica7 {
         }
     }
     
+    /**
+     * 
+     * <h2>Método para leer caracter a caracter y escribir..</h2>
+     * <p>El método <b>leoChars</b> realiza un lectura y escritura desde y hacia
+     * los ficheros indicados por el usuario mediante el método pedirRuta. En el fichero
+     * de destino, se escriben los títulos del encabezado mediante el método escribirCabecera.
+     * mediante el uso de objetos file.</p>
+     * 
+     * @see #pedirRuta(java.lang.String) 
+     * @see #escribirCabecera(java.lang.String[], java.lang.String)
+     * @see java.io.File
+     * @see java.io.FileReader
+     * @see java.io.FileWriter
+     * 
+     * @param encabezados Array de Strings con los titulos del encabezado.
+     * FileNotFoundException Excepcion por no encontrar la ruta indicada
+     * ErrorderutaException Excepcion por no encontrar la ruta indicada
+     * UnsupportedEncodingException Excepcion por utilizar un encode incorrecto
+     * IOException Excepcion derivada del uso de los objetos BufferedReader
+     * 
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
+     */
     public static void leoChars(String [] encabezados){
         String origen = pedirRuta("origen");
         String destino = pedirRuta("destino");
@@ -288,6 +386,33 @@ public class Practica7 {
         }
     }
     
+     /**
+     * 
+     * <h2>Método para leer lineas de texto y transcribirlas a un documento.</h2>
+     * <p>El método <b>leoLineas</b> realiza un lectura y escritura de textos de documentos
+     * indicados por el usuario en el método pedirRuta() mediante el uso de objetos
+     * buffers y file.
+     * Además, en el fichero de destino, se escriben los títulos del encabezado
+     * mediante el métodoescribirCabecera.</p>
+     * 
+     * @see #pedirRuta(java.lang.String) 
+     * @see #escribirCabecera(java.lang.String[], java.lang.String)
+     * @see java.io.BufferedReader
+     * @see java.io.BufferedWriter
+     * @see java.io.File
+     * @see java.io.FileReader
+     * @see java.io.FileWriter
+     * 
+     * @param encabezados Array de Strings con los titulos del encabezado.
+     * 
+     * FileNotFoundException Excepcion por no encontrar la ruta indicada
+     * ErrorderutaException Excepcion por no encontrar la ruta indicada
+     * IOException Excepcion derivada del uso de los objetos BufferedReader y
+     * BufferedWritter. Todos los errores quedan registrados en un fichero de salida.
+     * 
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
+     * 
+     */
     public static void leoLineas(String [] encabezados){
         String origen = pedirRuta("origen");
         String destino = pedirRuta("destino");
@@ -335,6 +460,15 @@ public class Practica7 {
         }
     }
     
+    /**
+     * <h2>Método para transcribir Strings a un documento de salida.</h2>
+     * 
+     * @param encabezados Array de Strings con los titulos del encabezado.
+     * @param destino Ruta del fichero de destino.
+     * 
+     * @throws IOException Se puede producir una excepción derivada del uso del objeto 
+     * @see java.io.OutputStreamWriter
+     */
     public static void escribirCabecera(String [] encabezados, String destino) throws IOException{
         String nuevaLinea = System.getProperty("line.separator");
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(destino, true), StandardCharsets.UTF_8)){
