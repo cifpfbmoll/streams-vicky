@@ -55,7 +55,7 @@ public class ErrorderutaException extends Exception{
 
     /**
      * getter del atributo mensaje.
-     * @return devuelve el mensaje.
+     * @return devuelve un string con el mensaje.
      */
     public String getMensaje() {
         return mensaje;
@@ -63,7 +63,7 @@ public class ErrorderutaException extends Exception{
 
     /**
      * getter del atributo codError.
-     * @return devuelve el codigo del error.
+     * @return devuelve un entero con el codigo del error.
      */
     public int getCodError() {
         return codError;
@@ -91,7 +91,9 @@ public class ErrorderutaException extends Exception{
      * <p>Cualquier excepcion que se produzca en el programa es documentada en 
      * un fichero de salida llamado errores.txt. Se registra la fecha y la hora
      * en la cual se ha producido el error, el mensaje de error y la pila de ejecución.</p>
+     * 
      * @see #registrarFecha(java.io.OutputStreamWriter) 
+     * 
      * @param errorMessage Mensaje de error
      * @param pila Pila es las trazas de ejecución desde dónde se ha producido la excepción.
      */
@@ -116,8 +118,11 @@ public class ErrorderutaException extends Exception{
      * <p>El método <b>registrarFecha</b> trasncribe en el fichero de errores.txt
      * generado en el método {@link #registrarErrores} la fecha y la hora en el que se
      * ha producido un error. Para obtener los datos se ha utilizado la clase Calendar.</p>
+     * 
      * @see java.util.Calendar
+     * 
      * @param writer Objeto de escritura que se utilizará.
+     * 
      * @throws IOException Este método lanza una excepcion de tipo IOException
      * que se debe controlar.
      */

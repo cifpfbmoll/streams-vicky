@@ -96,15 +96,18 @@ public class Practica7 {
      * el archivo desde dónde se tiene que hacer una lectura de un fichero o en
      * qué archivo se debe realizar la escritura.</p>
      * 
-     * @param origenEntrada Condicion para identificar si la ruta que debe calcular
-     * es de origen, es decir, para lectura o de salida, es decir, para escritura
-     * @return devuelve la ruta dónde está ubicado el fichero.
+     * @param origenEntrada Recibe un string que identifica si la ruta que tiene
+     * que crear es para el fichero de origen o el fichero de salida
      * 
-     * ErrorderutaException Excepcion que ocurre en el caso de que no
-     * se indique la ruta con la ubicación del archivo. Todos los errores quedan
-     * registrados en un fichero de logs.
+     * @return devuelve un string con la ruta para encontrar o crear el fichero
+     * de lectura o escritura
      * 
+     * Algunos de los métodos que se utilizan:
      * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
+     * 
+     * Se tratan las siguientes excepciones:
+     * @see practica7.ErrorderutaException Excepcion que ocurre al no indicar una ruta
+     * Todos los errores quedan registrados en un fichero de logs en el mismo proyecto.
      * 
      */
     public static String pedirRuta(String origenEntrada){
@@ -138,16 +141,22 @@ public class Practica7 {
      * si el archivo de origen está guardado con el encoding especificando, se
      * transcribe respetándo el formato de origen.</p>
      * 
+     * @param encabezados Array de Strings con los titulos del encabezado.
+     * 
+     * Algunos de los métodos que se utilizan:
      * @see #pedirRuta(java.lang.String) 
      * @see #escribirCabecera(java.lang.String[], java.lang.String)
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[])
+     * 
+     * Se utilizan las siguientes clases:
      * @see java.io.FileInputStream
      * @see java.io.FileOutputStream
      * 
-     * @param encabezados Array de Strings con los titulos del encabezado.
-     * FileNotFoundException Excepcion por no encontrar la ruta indicada
-     * IOException Excepcion derivada del uso de los objetos BufferedReader
-     * 
-     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
+     * Se tratan las siguientes excepciones:
+     * @see java.io.FileNotFoundException Excepcion por no encontrar la ruta indicada
+     * @see java.io.IOException Excepcion derivada del uso de los objetos BufferedReader
+     * @see practica7.ErrorderutaException Excepcion por no encontrar el fihcero indicado
+     * Todos los errores quedan registrados en un fichero de logs en el mismo proyecto.
      */
     public static void leoBytes(String [] encabezados){
         String origen = pedirRuta("origen");
@@ -222,21 +231,25 @@ public class Practica7 {
      * Además, escribe los títulos del encabezado en el fichero de salida mediante
      * el método escribirCabecera.</p>
      * 
+     * @param encabezados Array de Strings con los titulos del encabezado
+     * 
+     * Algunos de los métodos que se utilizan:
      * @see #pedirRuta(java.lang.String)
      * @see #escribirCabecera(java.lang.String[], java.lang.String) 
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[])
+     * 
+     * Se utilizan las siguientes clases:
      * @see java.io.OutputStreamWriter
      * @see java.io.InputStreamReader
      * @see java.io.FileInputStream
      * @see java.io.FileOutputStream
      * 
-     * @param encabezados Array de Strings con los titulos del encabezado
+     * Se tratan las siguientes excepciones:
+     * @see java.io.FileNotFoundException Excepcion por no encontrar la ruta indicada
+     * @see practica7.ErrorderutaException Excepcion por no encontrar la ruta indicada
+     * @see java.io.UnsupportedEncodingException Excepcion por utilizar un encode incorrecto
+     * @see java.io.IOException Excepcion derivada del uso de los objetos BufferedReader
      * 
-     * FileNotFoundException Excepcion por no encontrar la ruta indicada
-     * ErrorderutaException Excepcion por no encontrar la ruta indicada
-     * UnsupportedEncodingException Excepcion por utilizar un encode incorrecto
-     * IOException Excepcion derivada del uso de los objetos BufferedReader
-     * 
-     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[])
      */
     public static void leoBytesVersion2(String [] encabezados){
         String origen = pedirRuta("origen");
@@ -303,26 +316,29 @@ public class Practica7 {
     }
     
     /**
-     * 
      * <h2>Método para leer caracter a caracter y escribir..</h2>
      * <p>El método <b>leoChars</b> realiza un lectura y escritura desde y hacia
      * los ficheros indicados por el usuario mediante el método pedirRuta. En el fichero
      * de destino, se escriben los títulos del encabezado mediante el método escribirCabecera.
      * mediante el uso de objetos file.</p>
      * 
+     * @param encabezados Array de Strings con los titulos del encabezado.
+     * 
+     * Algunos de los métodos que se utilizan:
      * @see #pedirRuta(java.lang.String) 
      * @see #escribirCabecera(java.lang.String[], java.lang.String)
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[])
+     * 
+     * Las clases utilizadas son:
      * @see java.io.File
      * @see java.io.FileReader
      * @see java.io.FileWriter
      * 
-     * @param encabezados Array de Strings con los titulos del encabezado.
-     * FileNotFoundException Excepcion por no encontrar la ruta indicada
-     * ErrorderutaException Excepcion por no encontrar la ruta indicada
-     * UnsupportedEncodingException Excepcion por utilizar un encode incorrecto
-     * IOException Excepcion derivada del uso de los objetos BufferedReader
-     * 
-     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
+     * Se tratan las siguientes excepciones:
+     * @see java.io.FileNotFoundException Excepcion por no encontrar la ruta indicada
+     * @see practica7.ErrorderutaException Excepcion por no encontrar la ruta indicada
+     * @see java.io.UnsupportedEncodingException Excepcion por utilizar un encode incorrecto
+     * @see java.io.IOException Excepcion derivada del uso de los objetos BufferedReader
      */
     public static void leoChars(String [] encabezados){
         String origen = pedirRuta("origen");
@@ -387,7 +403,6 @@ public class Practica7 {
     }
     
      /**
-     * 
      * <h2>Método para leer lineas de texto y transcribirlas a un documento.</h2>
      * <p>El método <b>leoLineas</b> realiza un lectura y escritura de textos de documentos
      * indicados por el usuario en el método pedirRuta() mediante el uso de objetos
@@ -395,23 +410,26 @@ public class Practica7 {
      * Además, en el fichero de destino, se escriben los títulos del encabezado
      * mediante el métodoescribirCabecera.</p>
      * 
+     * @param encabezados Array de Strings con los titulos del encabezado.
+     * 
+     * Algunos de los métodos utilizados:
      * @see #pedirRuta(java.lang.String) 
      * @see #escribirCabecera(java.lang.String[], java.lang.String)
+     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
+     * 
+     * Las clases utilizadas son:
      * @see java.io.BufferedReader
      * @see java.io.BufferedWriter
      * @see java.io.File
      * @see java.io.FileReader
      * @see java.io.FileWriter
      * 
-     * @param encabezados Array de Strings con los titulos del encabezado.
-     * 
-     * FileNotFoundException Excepcion por no encontrar la ruta indicada
-     * ErrorderutaException Excepcion por no encontrar la ruta indicada
-     * IOException Excepcion derivada del uso de los objetos BufferedReader y
-     * BufferedWritter. Todos los errores quedan registrados en un fichero de salida.
-     * 
-     * @see practica7.ErrorderutaException#registrarErrores(java.lang.String, java.lang.StackTraceElement[]) 
-     * 
+     * Las excepcion que se tratan en el método son:
+     * @see java.io.FileNotFoundException Excepcion por no encontrar la ruta indicada
+     * @see java.io.IOException Excepcion derivada del uso de los objetos BufferedReader y
+     * BufferedWritter.
+     * @see practica7.ErrorderutaException Excepcion por no encontrar la ruta indicada
+     * Todos los errores quedan registrados en un fichero de salida.
      */
     public static void leoLineas(String [] encabezados){
         String origen = pedirRuta("origen");
