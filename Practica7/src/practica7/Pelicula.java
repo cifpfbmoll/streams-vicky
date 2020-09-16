@@ -23,7 +23,8 @@ import static practica7.ErrorderutaException.registrarErrores;
 import static practica7.Practica7.pedirRuta;
 
 /**
- * <p>Clase para la creación de objetos de tipo Pelicula con los siguientes atributos:</p>
+ * <h1>Clase Pelicula</h1>
+ * <p>La clase Pelicula está formada por los siguientes atributos privados:</p>
  * <ul>
  * <li>titulo</li>
  * <li>año</li>
